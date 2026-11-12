@@ -1,0 +1,35 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "ReadVolumesAndSnapshots",
+      "Effect": "Allow",
+      "Action": ["ec2:DescribeVolumes", "ec2:DescribeSnapshots"],
+      "Resource": "*"
+    },
+    {
+      "Sid": "CreateSnapshots",
+      "Effect": "Allow",
+      "Action": "ec2:CreateSnapshot",
+      "Resource": "*"
+    },
+    {
+      "Sid": "TagOnlyAtCreation",
+      "Effect": "Allow",
+      "Action": "ec2:CreateTags",
+      "Resource": "arn:aws:ec2:*:*:snapshot/*",
+      "Condition": {
+        "StringEquals": { "ec2:CreateAction": "CreateSnapshot" }
+      }
+    },
+    {
+      "Sid": "DeleteOnlyOwnSnapshots",
+      "Effect": "Allow",
+      "Action": "ec2:DeleteSnapshot",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": { "ec2:ResourceTag/ManagedBy": "aws-snapshot-cleanup" }
+      }
+    }
+  ]
+}

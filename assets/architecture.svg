@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="440" viewBox="0 0 1280 440" role="img" aria-label="EventBridge Scheduler triggers the Lambda at 3 AM Eastern. The Lambda first deletes expired snapshots tagged ManagedBy, then snapshots volumes tagged Backup=true. IAM only allows deleting ManagedBy-tagged snapshots. Logs go to CloudWatch.">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="#ff2e3c"/>
+    </marker>
+    <marker id="arrm" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="#6b585b"/>
+    </marker>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0H0V40" fill="none" stroke="#ffffff" stroke-opacity=".03"/>
+    </pattern>
+    <style>
+      .mono{font-family:ui-monospace,'SF Mono',Consolas,Menlo,monospace}
+      .sans{font-family:'Segoe UI',-apple-system,'Helvetica Neue',Helvetica,Arial,sans-serif}
+      .node{fill:#150d0f;stroke:#3a2226;stroke-width:1.5}
+      .hot{fill:#1e0b0e;stroke:#ff2e3c;stroke-width:1.5}
+      .t{font-size:19px;font-weight:700;fill:#f3eded}
+      .s{font-size:13px;fill:#9a8589}
+      .lbl{font-size:13px;fill:#ffb3b8}
+      .flow{stroke:#ff2e3c;stroke-width:2;fill:none;stroke-dasharray:6 6;animation:f 1.2s linear infinite}
+      .muted{stroke:#6b585b;stroke-width:1.5;fill:none;stroke-dasharray:3 5}
+      @keyframes f{to{stroke-dashoffset:-24}}
+      @media (prefers-reduced-motion:reduce){.flow{animation:none}}
+    </style>
+  </defs>
+
+  <rect width="1280" height="440" rx="18" fill="#0b0708"/>
+  <rect width="1280" height="440" rx="18" fill="url(#grid)"/>
+  <rect x=".5" y=".5" width="1279" height="439" rx="17.5" fill="none" stroke="#ff2e3c" stroke-opacity=".22"/>
+
+  <!-- Scheduler -->
+  <rect class="node" x="48" y="150" width="220" height="96" rx="12"/>
+  <text class="sans t" x="68" y="190">EventBridge</text>
+  <text class="sans t" x="68" y="214">Scheduler</text>
+  <text class="mono s" x="68" y="236">03:00 America/New_York</text>
+
+  <!-- Lambda -->
+  <rect class="hot" x="388" y="140" width="250" height="116" rx="12"/>
+  <text class="mono" x="408" y="176" font-size="26" fill="#ff2e3c" font-weight="700">λ</text>
+  <text class="sans t" x="436" y="176">snapshot-cleanup</text>
+  <text class="mono s" x="408" y="204">Python 3.12 · 128 MB</text>
+  <text class="mono s" x="408" y="224">timeout 30 s</text>
+  <text class="mono s" x="408" y="244">DRY_RUN · RETENTION_DAYS</text>
+
+  <!-- Snapshots -->
+  <rect class="node" x="900" y="56" width="332" height="108" rx="12"/>
+  <text class="sans t" x="920" y="94">EBS snapshots</text>
+  <text class="mono s" x="920" y="118">delete only if tagged</text>
+  <text class="mono lbl" x="920" y="140">ManagedBy=aws-snapshot-cleanup</text>
+
+  <!-- Volume -->
+  <rect class="node" x="900" y="252" width="332" height="96" rx="12"/>
+  <text class="sans t" x="920" y="290">EBS volume</text>
+  <text class="mono s" x="920" y="314">opt-in by tag</text>
+  <text class="mono lbl" x="920" y="334">Backup=true</text>
+
+  <!-- CloudWatch -->
+  <rect class="node" x="388" y="336" width="250" height="64" rx="12"/>
+  <text class="sans" x="408" y="366" font-size="16" font-weight="700" fill="#d9c9cb">CloudWatch Logs</text>
+  <text class="mono s" x="408" y="386">every run, created + deleted</text>
+
+  <!-- edges -->
+  <path class="flow" d="M268 198 H382" marker-end="url(#arr)"/>
+  <path class="flow" d="M638 176 C760 176 770 110 894 110" marker-end="url(#arr)"/>
+  <path class="flow" d="M638 226 C760 226 770 300 894 300" marker-end="url(#arr)"/>
+  <path class="flow" d="M1066 252 V170" marker-end="url(#arr)"/>
+  <path class="muted" d="M513 256 V330" marker-end="url(#arrm)"/>
+
+  <!-- step labels -->
+  <g class="mono">
+    <rect x="690" y="96" width="30" height="24" rx="12" fill="#ff2e3c"/>
+    <text x="705" y="113" font-size="13" font-weight="700" fill="#0b0708" text-anchor="middle">1</text>
+    <text x="730" y="113" font-size="13" fill="#ffb3b8">delete expired</text>
+
+    <rect x="690" y="296" width="30" height="24" rx="12" fill="#ff2e3c"/>
+    <text x="705" y="313" font-size="13" font-weight="700" fill="#0b0708" text-anchor="middle">2</text>
+    <text x="730" y="313" font-size="13" fill="#ffb3b8">create new</text>
+  </g>
+  <text class="mono s" x="1080" y="218">snapshot</text>
+
+  <!-- IAM guard -->
+  <g transform="translate(900 380)">
+    <rect width="332" height="40" rx="20" fill="#ff2e3c" fill-opacity=".1" stroke="#ff2e3c" stroke-opacity=".5"/>
+    <text class="mono" x="166" y="25" font-size="13" text-anchor="middle" fill="#ffb3b8">IAM refuses every other delete</text>
+  </g>
+  <path class="muted" d="M1232 400 C1252 400 1256 392 1256 370 V128 C1256 114 1250 110 1240 110" marker-end="url(#arrm)"/>
+
+  <text class="mono" x="48" y="64" font-size="13" letter-spacing="2.5" fill="#ff6b73">ARCHITECTURE</text>
+  <text class="sans" x="48" y="96" font-size="15" fill="#9a8589">Delete runs before create, so a fresh snapshot</text>
+  <text class="sans" x="48" y="118" font-size="15" fill="#9a8589">can never be caught by the same run.</text>
+</svg>
